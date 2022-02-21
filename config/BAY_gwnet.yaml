@@ -1,0 +1,42 @@
+
+LOG:
+  save_dir: experiments/bay
+  log_graph: True
+  name: Forward-backward-adaptive
+
+HPARAMS:
+  DATA:
+    dataset: bay
+    seq_len: 12
+    horizon: 12
+    batch_size: 64
+
+  MODEL:
+    kernel_size: 2
+    in_features: 2
+    hidden_dim: 32
+    num_enc_blocks: 4
+    num_gnn_layers: 2
+    num_temp_layers: 2
+    adj_mode: bidirection # bidirection (A and A.T) / forward (A) / backward (A.T) / empty / 
+    adj_type: weight # weight / connectivity_only / random / identity
+    num_adaptive_adj: 1
+
+  OPTIMIZER:
+    dropout: 0.3
+    lr: 0.001
+    weight_decay: 0.0001
+    target_metric: Training/mae
+    monitor_metric: Validation/mae
+
+TRAINER:
+  gradient_clip_val: 5
+  max_epochs: 100
+  gpus: [0] # set 0 (not [0]) if you don't have GPU
+
+MODEL_SUMMARY:
+  max_depth: -1
+
+TEST:
+  gpus: [0] # set 0 (not [0]) if you don't have GPU
+  checkpoint: experiments/bay/Forward-backward-adaptive/checkpoints/epoch=70-step=40469.ckpt

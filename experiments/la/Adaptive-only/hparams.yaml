@@ -1,0 +1,22 @@
+hparams:
+  DATA:
+    batch_size: 64
+    dataset: la
+    horizon: 12
+    seq_len: 12
+  MODEL:
+    adj_mode: empty
+    adj_type: weight
+    hidden_dim: 32
+    in_features: 2
+    kernel_size: 2
+    num_adaptive_adj: 1
+    num_enc_blocks: 4
+    num_gnn_layers: 2
+    num_temp_layers: 2
+  OPTIMIZER:
+    dropout: 0.3
+    lr: 0.001
+    monitor_metric: Validation/mae
+    target_metric: Training/mae
+    weight_decay: 0.0001
