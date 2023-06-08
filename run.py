@@ -45,9 +45,9 @@ def test_model(args):
 
     dm = data_load(**config['HPARAMS']['DATA'])
     model = GWNETPredictor.load_from_checkpoint(
-        config['TEST']['checkpoint'], scaler=dm.get_scaler(), A=dm.get_adj())
+        config['TEST']['checkpoint'], scaler=dm.get_scaler(), A=dm.get_adj(), map_location='cpu')
 
-    trainer = Trainer(gpus=config['TEST']['gpus'],
+    trainer = Trainer(**config['TRAINER'],
                       callbacks=[RichProgressBar()],
                       enable_checkpointing=False,
                       logger=False)
@@ -56,7 +56,6 @@ def test_model(args):
 
 if __name__ == '__main__':
     parser = ArgumentParser()
-    parser = Trainer.add_argparse_args(parser)
 
     # Program specific args
     parser.add_argument("--config", type=str,

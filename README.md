@@ -6,16 +6,22 @@
 
 > **_NOTE:_** [Anaconda](https://docs.anaconda.com/anaconda/install/index.html) should be installed in the system.
 
-### 1.1. Create a conda environment
+### 1.1. Create a conda environment with python
 
 ```bash
-conda env create -f environment.yml
+conda create -n gwnet python
 ```
 
 ### 1.2. Activate the environment
 
 ```bash
 conda activate gwnet
+```
+
+### 1.3. Install the dependencies
+
+```bash
+pip install -r requirements.txt
 ```
 
 ## 2. Training

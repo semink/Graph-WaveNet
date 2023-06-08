@@ -32,11 +32,10 @@ HPARAMS:
 TRAINER:
   gradient_clip_val: 5
   max_epochs: 100
-  gpus: [0] # set 0 (not [0]) if you don't have GPU
+  accelerator: 'auto'
 
 MODEL_SUMMARY:
   max_depth: -1
 
 TEST:
-  gpus: [0] # set 0 (not [0]) if you don't have GPU
   checkpoint: experiments/la/Forward-backward-adaptive/checkpoints/epoch=65-step=24749.ckpt

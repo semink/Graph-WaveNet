@@ -19,6 +19,8 @@ class Predictor(pl.LightningModule):
         # for logging computational graph in tensorboard
         self.example_input_array = torch.rand(
             hparams['DATA']['batch_size'], hparams['MODEL']['in_features'], A.size(0), hparams['DATA']['seq_len'])
+        self.validation_step_outputs = []
+        self.test_step_outputs = []
         self.save_hyperparameters('hparams')
 
     def on_train_start(self):
@@ -38,24 +40,31 @@ class Predictor(pl.LightningModule):
     def validation_step(self, batch, idx):
         x, y = batch
         pred = self.scaler.inverse_transform(self.forward(x))
+        self.validation_step_outputs.append({'y': y, 'pred': pred})
         return {'y': y, 'pred': pred}
 
-    def validation_epoch_end(self, outputs):
-        y = torch.cat([output['y'] for output in outputs], dim=0)
-        pred = torch.cat([output['pred'] for output in outputs], dim=0)
+    def on_validation_epoch_end(self):
+        y = torch.cat([output['y']
+                      for output in self.validation_step_outputs], dim=0)
+        pred = torch.cat([output['pred']
+                         for output in self.validation_step_outputs], dim=0)
         loss = utils.masked_MAE(pred, y)
         self.log_dict(
             {self.monitor_metric: loss, "step": self.current_epoch}, prog_bar=True, on_epoch=True)
+        self.validation_step_outputs.clear()
 
     def test_step(self, batch, idx):
         x, y = batch
         pred = self.scaler.inverse_transform(self.forward(x))
+        self.test_step_outputs.append({'y': y, 'pred': pred})
         return {'y': y, 'pred': pred}
 
-    def test_epoch_end(self, outputs):
+    def on_test_epoch_end(self):
         # target and prediction
-        y = torch.cat([output['y'] for output in outputs], dim=0)
-        pred = torch.cat([output['pred'] for output in outputs], dim=0)
+        y = torch.cat([output['y']
+                      for output in self.test_step_outputs], dim=0)
+        pred = torch.cat([output['pred']
+                         for output in self.test_step_outputs], dim=0)
 
         # calculate error for each metric
         loss = {'mae': utils.masked_MAE(pred, y, dim=(0, -1)),
@@ -80,6 +89,7 @@ class Predictor(pl.LightningModule):
         print(f"MAPE: {loss['mape'].mean():.2f}")
 
         self.test_results = pred.cpu()
+        self.test_step_outputs.clear()
 
     def configure_optimizers(self):
         return optim.Adam(self.model.parameters(), lr=self.lr,
