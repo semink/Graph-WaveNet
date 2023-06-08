@@ -9,13 +9,10 @@ from pytorch_lightning.callbacks import RichModelSummary, RichProgressBar, Model
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning import Trainer
 
-import os
 
-
-def data_load(dataset, batch_size, seq_len, horizon,
-              num_workers=os.cpu_count(), **kwargs):
+def data_load(dataset, batch_size, seq_len, horizon, **kwargs):
     dm = DataModule(dataset, batch_size, seq_len,
-                    horizon, num_workers)
+                    horizon)
     dm.prepare_data()
     return dm
 
