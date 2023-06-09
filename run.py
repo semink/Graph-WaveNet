@@ -12,7 +12,7 @@ from pytorch_lightning import Trainer
 
 def data_load(dataset, batch_size, seq_len, horizon, **kwargs):
     dm = DataModule(dataset, batch_size, seq_len,
-                    horizon)
+                    horizon, **kwargs)
     dm.prepare_data()
     return dm
 

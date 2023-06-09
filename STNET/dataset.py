@@ -113,8 +113,8 @@ class DataModule(LightningDataModule):
 
     def _set_scaler(self):
         train_df, _, _ = utils.split_data(df=self.df)
-        mean = np.nanmean(train_df.replace(0.0, np.nan).values)
-        std = np.nanstd(train_df.replace(0.0, np.nan).values)
+        mean = train_df.values.mean()
+        std = train_df.values.std()
         self.scaler = utils.StandardScaler(mean, std)
 
     def _set_dataset(self):
