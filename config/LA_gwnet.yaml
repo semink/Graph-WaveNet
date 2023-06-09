@@ -10,6 +10,7 @@ HPARAMS:
     seq_len: 12
     horizon: 12
     batch_size: 64
+    test_on_time: [['00:00', '23:55']]
 
   MODEL:
     kernel_size: 2
